@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\NotifyMessageController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\NotifyMessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +14,5 @@ use App\Http\Controllers\NotifyMessageController;
 |
 */
 
-Route::post('/chat/{id}', [NotifyMessageController::class, 'notifyCreateChat'])->name('notifyCreateChat');
-Route::post('/chat/{id}/message', [NotifyMessageController::class, 'notifyReply'])->name('notifyReply');
+Route::post('chat/{id}', [NotifyMessageController::class, 'notifyCreateChat'])->name('notifyCreateChat');
+Route::post('chat/{id}/message', [NotifyMessageController::class, 'notifyReply'])->name('notifyReply');

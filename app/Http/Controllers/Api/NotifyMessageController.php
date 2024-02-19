@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class NotifyMessageController extends Controller
 {
     public function notifyCreateChat(Request $request)
     {
-        Log::debug($request->all());
+        ddd($request->all());
     }
 
     public function notifyReply(Request $request)
     {
-        Log::debug($request->all());
+        ddd($request->all());
     }
 }
