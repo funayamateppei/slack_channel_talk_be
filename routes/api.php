@@ -14,5 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('chat/{id}', [NotifyMessageController::class, 'notifyCreateChat'])->name('notifyCreateChat');
-Route::post('chat/{id}/message', [NotifyMessageController::class, 'notifyReply'])->name('notifyReply');
+Route::post('message', [NotifyMessageController::class, 'notifyChatMessage'])->name('notifyChatMessage');
