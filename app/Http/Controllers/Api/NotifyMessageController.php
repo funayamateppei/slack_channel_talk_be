@@ -15,7 +15,14 @@ class NotifyMessageController extends Controller
         if (!$type || !isset($type) || $type !== 'user') return;
 
 
-
+        $thread = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer xoxp-6647197972901-6662773587345-6652652951732-5e6461ff91aa45137b05cd1b05280c3a',
+        ])->get("https://slack.com/api/search.messages", [
+            'query' => 'from:MessageTest in:#スレッド投稿 "test1"',
+            'count' => 1
+        ])->json();
+        Log::debug($thread["matches"]);
 
 
         $response = Http::withHeaders([
