@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class NotifyMessageController extends Controller
 {
