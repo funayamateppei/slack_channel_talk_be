@@ -63,6 +63,20 @@ class NotifyMessageController extends Controller
                                 "text" => "chat_id: " . $request->input('entity.chatId')
                             ],
                         ]
+                    ],
+                    [
+                        "type" => "actions",
+                        "elements" => [
+                            [
+                                "type" => "button",
+                                "text" => [
+                                    "type" => "plain_text",
+                                    "text" => "Chat Link"
+                                ],
+                                "style" => "primary",
+                                "url" => "https://desk.channel.io/#/channels/" . $request->input('entity.channelId') . "/user_chats/" . $request->input('entity.chatId')
+                            ]
+                        ]
                     ]
                 ]
             ]);
