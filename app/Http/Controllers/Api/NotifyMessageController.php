@@ -89,6 +89,24 @@ class NotifyMessageController extends Controller
                 "ts" => $res['ts'],
             ];
             Thread::create($data);
+        } else if ($request->input('entity.log.action') === "close") {
+            Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Authorization' => "Bearer $botToken",
+            ])->post('https://slack.com/api/chat.postMessage', [
+                'channel' => "C06K407C4V9",
+                'text' => "お問い合わせがクローズされました。",
+                'thread_ts' => $thread[0]['ts'],
+            ]);
+        } else if ($request->input('entity.log.action') === "leave") {
+            Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Authorization' => "Bearer $botToken",
+            ])->post('https://slack.com/api/chat.postMessage', [
+                'channel' => "C06K407C4V9",
+                'text' => $request->input('refers.user.name') . " さんが退出しました。",
+                'thread_ts' => $thread[0]['ts'],
+            ]);
         } else {
             Http::withHeaders([
                 'Content-Type' => 'application/json',
