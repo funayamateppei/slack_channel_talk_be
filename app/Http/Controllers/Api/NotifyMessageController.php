@@ -14,20 +14,22 @@ class NotifyMessageController extends Controller
         $type = $request->input('entity.personType');
         if (!$type || !isset($type) || $type !== 'user') return;
 
+        $userToken = env("SLACK_USER_TOKEN");
+        $botToken = env("SLACK_BOT_TOKEN");
 
         $thread = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer xoxp-6647197972901-6662773587345-6652652951732-5e6461ff91aa45137b05cd1b05280c3a',
+            'Authorization' => "Bearer $userToken",
         ])->get("https://slack.com/api/search.messages", [
             'query' => 'from:MessageTest in:#スレッド投稿 "test1"',
             'count' => 1
         ])->json();
-        Log::debug($thread["matches"]);
+        Log::debug($thread);
 
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer xoxb-6647197972901-6644324815110-UB5eWGxyTd3e9wjYsnro4yai',
+            'Authorization' => "Bearer $botToken",
         ])->post('https://slack.com/api/chat.postMessage', [
             'channel' => "C06K407C4V9",
             'text' => $request->input('entity.plainText'),
