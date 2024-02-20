@@ -81,7 +81,7 @@ class NotifyMessageController extends Controller
                 'Authorization' => "Bearer $botToken",
             ])->post('https://slack.com/api/chat.postMessage', [
                 'channel' => "C06K407C4V9",
-                'text' => $request->input('entity.plainText'),
+                'text' => $request->input('entity.plainText') ? $request->input('entity.plainText') : "ファイルが送信されました。",
                 'thread_ts' => $thread[0]['ts'],
             ]);
         }
