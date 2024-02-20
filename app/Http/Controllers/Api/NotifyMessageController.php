@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Thread;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class NotifyMessageController extends Controller
 {
@@ -13,20 +15,13 @@ class NotifyMessageController extends Controller
         $type = $request->input('entity.personType');
         if (!$type || !isset($type) || $type !== 'user') return;
 
-        $userToken = env("SLACK_USER_TOKEN");
         $botToken = env("SLACK_BOT_TOKEN");
 
         $chatId = $request->input('entity.chatId');
-        $thread = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => "Bearer $userToken",
-        ])->get("https://slack.com/api/search.messages", [
-            'query' => "from:MessageTest in:#スレッド投稿 " . "chat_id: $chatId",
-            'count' => 1
-        ])->json();
+        $thread = Thread::where('chat_id', $chatId)->get();
 
-        if (!$thread) {
-            Http::withHeaders([
+        if (count($thread) === 0) {
+            $res = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => "Bearer $botToken",
             ])->post('https://slack.com/api/chat.postMessage', [
@@ -56,6 +51,15 @@ class NotifyMessageController extends Controller
                         "type" => "section",
                         "fields" => [
                             [
+                                "type" => "mrkdwn",
+                                "text" => "*内容:*\n" . $request->input('entity.plainText')
+                            ],
+                        ]
+                    ],
+                    [
+                        "type" => "section",
+                        "fields" => [
+                            [
                                 "type" => "plain_text",
                                 "text" => "chat_id: " . $request->input('entity.chatId')
                             ],
@@ -63,6 +67,15 @@ class NotifyMessageController extends Controller
                     ]
                 ]
             ]);
+
+            $data = [
+                "chat_id" => $chatId,
+                "tenant_name" => $request->input('refers.user.profile.tenantName'),
+                "user_name" => $request->input('refers.user.name'),
+                "content" => $request->input('entity.plainText'),
+                "ts" => $res['ts'],
+            ];
+            Thread::create($data);
         } else {
             Http::withHeaders([
                 'Content-Type' => 'application/json',
@@ -70,7 +83,7 @@ class NotifyMessageController extends Controller
             ])->post('https://slack.com/api/chat.postMessage', [
                 'channel' => "C06K407C4V9",
                 'text' => $request->input('entity.plainText'),
-                'thread_ts' => $thread['messages']['matches'][0]['ts'],
+                'thread_ts' => $thread[0]['ts'],
             ]);
         }
     }
